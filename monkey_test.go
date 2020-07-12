@@ -6,7 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
+	"github.com/henrylee2cn/monkey"
+	"github.com/henrylee2cn/monkey/testpkg"
 )
 
 func no() bool  { return false }
@@ -124,4 +125,12 @@ func panics(t *testing.T, f func()) {
 		}
 	}()
 	f()
+}
+
+func TestPatchByTargetName(t *testing.T) {
+	assert(t, "a" == testpkg.A())
+	monkey.PatchByTargetName("github.com/henrylee2cn/monkey/testpkg.a", func() string {
+		return "new a"
+	})
+	assert(t, "new a" == testpkg.A())
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"bou.ke/monkey"
+	"github.com/henrylee2cn/monkey"
 )
 
 func main() {

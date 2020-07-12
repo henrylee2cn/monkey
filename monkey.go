@@ -1,10 +1,12 @@
-package monkey // import "bou.ke/monkey"
+package monkey
 
 import (
 	"fmt"
 	"reflect"
 	"sync"
 	"unsafe"
+
+	"github.com/henrylee2cn/go-forceexport"
 )
 
 // patch is an applied patch
@@ -40,6 +42,37 @@ func (g *PatchGuard) Unpatch() {
 
 func (g *PatchGuard) Restore() {
 	patchValue(g.target, g.replacement)
+}
+
+// PatchByNames replaces a function with another by path names.
+func PatchByNames(targetName string, replacementName string) {
+	target, err := forceexport.FindFuncWithName(targetName)
+	if err != nil {
+		panic(err)
+	}
+	replacement, err := forceexport.FindFuncWithName(replacementName)
+	if err != nil {
+		panic(err)
+	}
+	replaceFunction(target, replacement)
+}
+
+// PatchByTargetName replaces a function with another by its path name.
+func PatchByTargetName(targetName string, replacement interface{}) {
+	target, err := forceexport.FindFuncWithName(targetName)
+	if err != nil {
+		panic(err)
+	}
+	replaceFunction(target, (uintptr)(getPtr(reflect.ValueOf(replacement))))
+}
+
+// PatchByReplacementName replaces a function with another by its path name.
+func PatchByReplacementName(target interface{}, replacementName string) {
+	replacement, err := forceexport.FindFuncWithName(replacementName)
+	if err != nil {
+		panic(err)
+	}
+	replaceFunction((uintptr)(getPtr(reflect.ValueOf(target))), replacement)
 }
 
 // Patch replaces a function with another

@@ -10,7 +10,10 @@ import (
 	"github.com/henrylee2cn/monkey/testpkg"
 )
 
-func no() bool  { return false }
+//go:noinline
+func no() bool { return false }
+
+//go:noinline
 func yes() bool { return true }
 
 func TestTimePatch(t *testing.T) {
@@ -83,6 +86,7 @@ func TestWithInstanceMethod(t *testing.T) {
 
 type f struct{}
 
+//go:noinline
 func (f *f) No() bool { return false }
 
 func TestOnInstanceMethod(t *testing.T) {
